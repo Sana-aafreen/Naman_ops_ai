@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 # Copy requirements first for better caching
 COPY Backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt --only-binary=pandas --only-binary=pandas
+RUN pip install --no-cache-dir -r requirements.txt --only-binary=pandas
 
 # Copy the entire project
 COPY . .
