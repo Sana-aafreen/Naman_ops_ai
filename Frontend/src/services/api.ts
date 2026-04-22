@@ -35,6 +35,10 @@ const getApiBase = (): string => {
   const envBase = (import.meta as any)?.env?.VITE_API_BASE as string | undefined;
   if (envBase && envBase.trim()) return envBase.trim();
 
+  // Check for production API URL
+  const prodApiUrl = (import.meta as any)?.env?.VITE_API_URL as string | undefined;
+  if (prodApiUrl && prodApiUrl.trim()) return prodApiUrl.trim();
+
   // If the frontend is not being served by the backend (8000) and no proxy is configured,
   // calls like `/api/...` will 404 on that frontend server. In that case, call backend directly.
   if (typeof window !== 'undefined' && window.location) {

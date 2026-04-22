@@ -70,6 +70,9 @@ yarn-error.log*
 dist/
 build/
 
+# Deployment
+.vercel/
+
 # Temporary files
 *.tmp
 *.temp

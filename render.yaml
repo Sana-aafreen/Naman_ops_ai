@@ -1,0 +1,26 @@
+﻿services:
+  - type: web
+    name: namandarshan-ops-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PYTHONPATH
+        value: /app
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8000
+      - key: ENABLE_NAMANDARSHAN_SCRAPE
+        value: true
+      - key: SCRAPE_TIMEOUT_SEC
+        value: 12
+      - key: SCRAPE_MAX_PAGES
+        value: 4
+      - key: SCRAPE_MAX_CHARS
+        value: 6000
+      - key: MAX_TOOL_ROUNDS
+        value: 5
+      - key: SESSION_TTL_MIN
+        value: 60
