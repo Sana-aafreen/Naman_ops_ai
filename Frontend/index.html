@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NamanDarshan Ops AI</title>
+  <link rel="stylesheet" href="/assets/style.css"/>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ════════════════════════════════
+       TOPBAR
+  ════════════════════════════════ -->
+  <header id="topbar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L9.5 5.5H5.5v4L3.5 12l2 2v4h4l2.5 2.5L14.5 18h4v-4l2-2-2-2V5.5h-4L12 3z"
+                fill="#E8731A" opacity="0.18"/>
+          <path d="M12 4.2l2.3 2.3H18v3.5l1.5 2-1.5 2v3.5h-3.7L12 19.8l-2.3-2.3H6v-3.5L4.5 12 6 10V6.5h3.7L12 4.2z"
+                stroke="#E8731A" stroke-width="1.3" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="2.3" fill="#C9922A"/>
+          <line x1="12" y1="4.2" x2="12" y2="2"  stroke="#E8731A" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="12" y1="22" x2="12" y2="19.8" stroke="#E8731A" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">NamanDarshan Ops AI</div>
+        <div class="brand-sub">Temple Services &amp; Booking Assistant</div>
+      </div>
+    </div>
+
+    <div id="status-pill">
+      <div class="dot"></div> Connecting…
+    </div>
+
+    <div class="topbar-actions">
+      <button class="icon-btn mobile-only" title="Menu" onclick="toggleSidebar()" aria-label="Open menu">&#9776;</button>
+      <button class="icon-btn mobile-only" title="Data" onclick="toggleDataPanel()" aria-label="Open data panel">&#9638;</button>
+      <button class="icon-btn" title="Reload Excel data"   onclick="doReload()">↻</button>
+      <button class="icon-btn" title="Upload new Excel"    onclick="openUpload()">⬆</button>
+      <button class="icon-btn" title="New conversation"    onclick="clearChat()">✦</button>
+      <button class="icon-btn" title="API documentation"   onclick="window.open('/docs','_blank')">⚙</button>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════ -->
+  <aside id="sidebar">
+
+    <!-- Live stats -->
+    <div class="side-card">
+      <div class="side-card-title">Live Data</div>
+      <div class="stat-row">
+        <span class="stat-label">Available Pandits</span>
+        <span class="stat-badge" id="stat-pandits">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Available Cabs</span>
+        <span class="stat-badge" id="stat-cabs">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Hotels Listed</span>
+        <span class="stat-badge warn" id="stat-hotels">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Temples Listed</span>
+        <span class="stat-badge warn" id="stat-temples">—</span>
+      </div>
+    </div>
+
+    <!-- Quick queries -->
+    <div class="side-card">
+      <div class="side-card-title">Quick Queries</div>
+      <button class="quick-link" onclick="sendQuick('Show me available pandits in Varanasi')">
+        <span class="ql-icon">🧘</span> Pandits in Varanasi
+      </button>
+      <button class="quick-link" onclick="sendQuick('What are the timings for Kashi Vishwanath Temple?')">
+        <span class="ql-icon">🛕</span> Kashi Vishwanath timings
+      </button>
+      <button class="quick-link" onclick="sendQuick('Find a budget hotel in Haridwar under ₹1500')">
+        <span class="ql-icon">🏨</span> Budget hotels Haridwar
+      </button>
+      <button class="quick-link" onclick="sendQuick('I need a cab for 6 people in Mathura')">
+        <span class="ql-icon">🚗</span> Cab for 6 in Mathura
+      </button>
+      <button class="quick-link" onclick="sendQuick('Book a Rudrabhishek puja in Varanasi under ₹2500')">
+        <span class="ql-icon">🪔</span> Rudrabhishek Varanasi
+      </button>
+      <button class="quick-link" onclick="sendQuick('Tell me about Ram Mandir VIP darshan in Ayodhya')">
+        <span class="ql-icon">📿</span> Ayodhya VIP darshan
+      </button>
+      <button class="quick-link" onclick="sendQuick('Plan my complete trip to Ujjain for Mahakaleshwar darshan')">
+        <span class="ql-icon">✨</span> Plan Ujjain trip
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════════════════════
+       MAIN CHAT AREA
+  ════════════════════════════════ -->
+  <main id="chat-area">
+
+    <!-- Messages -->
+    <div id="messages">
+      <div class="msg bot">
+        <div class="msg-avatar bot">ND</div>
+        <div class="msg-bubble">
+          🙏 Namaste Ji! Welcome to <strong>NamanDarshan</strong>.<br><br>
+          I'm your personal Ops Assistant with live access to our pandit database,
+          hotel listings, cab services, and temple timings.<br><br>
+          Tell me — which temple are you planning to visit, and how can I help you today?
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick chips -->
+    <div class="chips-bar">
+      <button class="chip" onclick="sendChip(this)">🛕 Temple timings</button>
+      <button class="chip" onclick="sendChip(this)">🧘 Book a pandit</button>
+      <button class="chip" onclick="sendChip(this)">📿 VIP darshan</button>
+      <button class="chip" onclick="sendChip(this)">🏨 Nearby hotels</button>
+      <button class="chip" onclick="sendChip(this)">🚗 Book a cab</button>
+      <button class="chip" onclick="sendChip(this)">🪔 Puja &amp; seva</button>
+      <button class="chip" onclick="sendChip(this)">💰 Budget options</button>
+      <button class="chip" onclick="sendChip(this)">✨ Plan full trip</button>
+    </div>
+
+    <!-- Input -->
+    <div class="input-row">
+      <input id="msg-input" type="text"
+        placeholder="Ask about darshan, pandits, hotels, cabs…"
+        autocomplete="off"/>
+      <button id="send-btn" onclick="handleSend()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="chat-footer">
+      Powered by NamanDarshan &middot; Groq AI &middot; namandarshan.com
+    </div>
+  </main>
+
+  <!-- ════════════════════════════════
+       DATA PANEL
+  ════════════════════════════════ -->
+  <aside id="data-panel">
+
+    <!-- Tabbed data viewer -->
+    <div class="panel-card">
+      <div class="panel-tabs">
+        <button class="p-tab active" onclick="switchTab('pandits', this)">Pandits</button>
+        <button class="p-tab"        onclick="switchTab('hotels',  this)">Hotels</button>
+        <button class="p-tab"        onclick="switchTab('cabs',    this)">Cabs</button>
+      </div>
+      <div class="panel-body" id="panel-body">
+        <div class="empty-state">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Temples -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <span>🛕</span>
+        <h3>Temples</h3>
+      </div>
+      <div class="panel-body" id="temples-body">
+        <div class="empty-state">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Session context -->
+    <div class="context-box">
+      <div class="cb-header">
+        <span>🧠</span> Remembered Context
+      </div>
+      <div class="cb-body" id="context-body">
+        <div class="empty-state">Your preferences will appear here as we chat</div>
+      </div>
+    </div>
+
+  </aside>
+
+</div><!-- #app -->
+
+
+<!-- ════════════════════════════════
+     UPLOAD MODAL
+════════════════════════════════ -->
+<div id="upload-overlay">
+  <div class="upload-modal">
+    <h2>Upload Excel Data</h2>
+    <p>Replace the current data file with a new Excel (.xlsx) containing
+       sheets: <strong>Pandits, Hotels, Cabs, Temples</strong></p>
+    <input type="file" id="excel-file-input" accept=".xlsx,.xls"/>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeUpload()">Cancel</button>
+      <button class="btn-primary"   onclick="doUpload()">Upload &amp; Reload</button>
+    </div>
+  </div>
+</div>
+
+
+<script type="module" src="/assets/app.js"></script>
+<div id="mobile-overlay" onclick="closePanels()" aria-hidden="true"></div>
+</body>
+</html>
