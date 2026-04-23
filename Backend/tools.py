@@ -228,7 +228,20 @@ def execute_tool(name: str, args: dict, session: "Session") -> str:
 
         if name == "get_temple_info":
             data = store.get_temple_info(**args)
-            return json.dumps({"temples": data, "count": len(data)})
+            result = {"temples": data, "count": len(data)}
+            
+            # If no temple found in Excel, suggest web search
+            if not data and args.get("name"):
+                temple_name = args.get("name")
+                result["info"] = f"Temple '{temple_name}' not found in local database. " \
+                               f"Searching NamanDarshan.com for this temple..."
+                # Automatically search the web
+                search_result = nd_search(f"{temple_name} temple", max_pages=3)
+                if search_result.get("results"):
+                    result["web_results"] = search_result.get("results")
+                    result["suggestion"] = "Consider using nd_fetch_page() to get detailed timing information from these results."
+            
+            return json.dumps(result)
 
         if name == "get_database_stats":
             return json.dumps(store.get_stats())
